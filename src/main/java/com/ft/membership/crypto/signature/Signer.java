@@ -40,6 +40,7 @@ public class Signer {
      *
      * @param bytes - byte array to sign
      * @return signature as a based64 encoded String
+     * @throws IllegalArgumentException, RuntimeException
      */
     public String signBytes(final byte[] bytes) {
 
@@ -80,6 +81,7 @@ public class Signer {
      * @param bytes - byte array of the data whose signature is to be verified
      * @param signature - base64 encoded signature of the bytes
      * @return boolean representing the validity of the signature
+     * @throws RuntimeException
      */
     public boolean isSignatureValid(final byte[] bytes, final String signature) {
 
