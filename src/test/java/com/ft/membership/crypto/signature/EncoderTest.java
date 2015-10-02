@@ -36,7 +36,7 @@ public class EncoderTest {
     public void testEncodeThenDecode() throws Exception {
 
         String testString = "foo";
-        String encodedString = Encoder.getBase64EncodedString(testString.getBytes());
+        String encodedString = Encoder.getBase64EncodedString(testString.getBytes(StandardCharsets.UTF_8));
         byte[] decodedBytes = Encoder.getBase64DecodedBytes(encodedString).get();
 
         Assert.assertEquals(testString, new String(decodedBytes, StandardCharsets.UTF_8));
@@ -46,7 +46,7 @@ public class EncoderTest {
     public void testEncodingAndDecodingOfStringWithLatinChars() throws Exception {
 
         String testString = "êfooñbar";
-        String encodedString = Encoder.getBase64EncodedString(testString.getBytes());
+        String encodedString = Encoder.getBase64EncodedString(testString.getBytes(StandardCharsets.UTF_8));
         byte[] decodedBytes = Encoder.getBase64DecodedBytes(encodedString).get();
 
         Assert.assertEquals(testString, new String(decodedBytes, StandardCharsets.UTF_8));
@@ -65,7 +65,7 @@ public class EncoderTest {
                 });
 
         String testString = stringBuilder.toString();
-        String encodedString = Encoder.getBase64EncodedString(testString.getBytes());
+        String encodedString = Encoder.getBase64EncodedString(testString.getBytes("UTF-8"));
         byte[] decodedBytes = Encoder.getBase64DecodedBytes(encodedString).get();
 
         Assert.assertEquals(testString, new String(decodedBytes, StandardCharsets.UTF_8));
