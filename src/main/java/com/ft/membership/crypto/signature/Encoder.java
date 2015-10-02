@@ -2,6 +2,7 @@ package com.ft.membership.crypto.signature;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 
 public class Encoder {
 
@@ -13,14 +14,14 @@ public class Encoder {
         return new String(BASE_64_ENCODER.encode(bytes), StandardCharsets.UTF_8);
     }
 
-    public static byte[] getBase64DecodedBytes(final String encodedString) {
+    public static Optional<byte[]> getBase64DecodedBytes(final String encodedString) {
 
         try {
-            return BASE_64_DECODER.decode(encodedString.getBytes(StandardCharsets.UTF_8));
+            return Optional.of(BASE_64_DECODER.decode(encodedString.getBytes(StandardCharsets.UTF_8)));
         } catch(IllegalArgumentException e) {
             // We do not want a RuntimeException to be thrown when the string passed is not in valid Base64 scheme
             // as bad input is possible to the lib methods.
-            return null;
+            return Optional.empty();
         }
     }
 }

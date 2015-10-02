@@ -26,7 +26,7 @@ public class EncoderTest {
         byte[] encodedBytes = Base64.getUrlEncoder().withoutPadding().encode(testString.getBytes());
         String encodedString = new String(encodedBytes, StandardCharsets.UTF_8);
         byte[] expectedDecodedBytes = Base64.getUrlDecoder().decode(encodedBytes);
-        byte[] actualDecodedBytes = Encoder.getBase64DecodedBytes(encodedString);
+        byte[] actualDecodedBytes = Encoder.getBase64DecodedBytes(encodedString).get();
 
         Assert.assertArrayEquals(expectedDecodedBytes, actualDecodedBytes);
     }
@@ -36,7 +36,7 @@ public class EncoderTest {
 
         String testString = "foo";
         String encodedString = Encoder.getBase64EncodedString(testString.getBytes());
-        byte[] decodedBytes = Encoder.getBase64DecodedBytes(encodedString);
+        byte[] decodedBytes = Encoder.getBase64DecodedBytes(encodedString).get();
 
         Assert.assertEquals(testString, new String(decodedBytes, StandardCharsets.UTF_8));
     }
