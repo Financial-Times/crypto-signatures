@@ -49,10 +49,8 @@ Pull requests welcome!
 
 ### How to release a new version?
 For FT developers, each new commit to `master` is automatically built and pushed to FT's internal Nexus repo.    
-The Jenkins CI job can be found here: [http://ftjen03760-lviw-uk-p:8181/job/crypto-signature/](http://ftjen03760-lviw-uk-p:8181/job/crypto-signature/)
+The Jenkins CI job can be found here: [http://ftjen03760-lviw-uk-p:8181/job/crypto-signatures/](http://ftjen03760-lviw-uk-p:8181/job/crypto-signatures/)
 
 Non-FT developers wishing to use the repo, will have to build and deploy to their local maven repo before manually until
- [Issue#1](https://github.com/Financial-Times/crypto-signature/issues/1) is resolved.
- 
-## TODOs
-* Logging across the library
+ [Issue#1](https://github.com/Financial-Times/crypto-signatures/issues/1) is resolved.
+
