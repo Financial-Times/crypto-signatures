@@ -58,7 +58,7 @@ public class EncoderTest {
         StringBuilder stringBuilder = new StringBuilder();
 
         IntStream.iterate(0, i -> i + 2)
-                .limit(10000)
+                .limit(1000)
                 .forEach(number -> {
                     char[] ch = Character.toChars(number);
                     stringBuilder.append(new String(ch));
