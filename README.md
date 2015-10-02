@@ -56,4 +56,3 @@ Non-FT developers wishing to use the repo, will have to build and deploy to thei
  
 ## TODOs
 * Logging across the library
-* JavaDocs for public API
