@@ -14,6 +14,7 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -35,12 +36,12 @@ public class Signer {
     }
 
     /**
-     * Sign the bytes provided as argument and return the signed bytes
+     * Sign the bytes provided as argument and return the signature as string
      *
      * @param bytes - byte array to sign
-     * @return signed byte array
+     * @return signature as a based64 encoded String
      */
-    public byte[] signBytes(final byte[] bytes) {
+    public String signBytes(final byte[] bytes) {
 
         final Operation resultOperation = Operation.resultOperation("signBytes")
                                                     .with("transaction_id", UUID.randomUUID())
@@ -59,13 +60,14 @@ public class Signer {
         try {
             ellipticCurveDSA.update(bytes);
             final byte[] signedBytes = ellipticCurveDSA.sign();
+            final String signedDataAsString = Encoder.getBase64EncodedString(signedBytes);
 
-            String resultString = String.format("{\"data\": \"%s\", \"signature\": \"%s\"}",
-                    new String(bytes),
-                    new String(signedBytes));
-
+            final String resultString = String.format("{\"data\": \"%s\", \"signature\": \"%s\"}",
+                                        new String(bytes),
+                                        signedDataAsString);
             resultOperation.wasSuccessful().yielding("signBytesResult", resultString).log();
-            return signedBytes;
+
+            return signedDataAsString;
         } catch (SignatureException e) {
             resultOperation.wasFailure().throwingException(e).log();
             throw new RuntimeException(e);
@@ -76,10 +78,10 @@ public class Signer {
      * Verifies the signature for a given byte array
      *
      * @param bytes - byte array of the data whose signature is to be verified
-     * @param signature - signature of bytes
+     * @param signature - base64 encoded signature of the bytes
      * @return boolean representing the validity of the signature
      */
-    public boolean isSignatureValid(final byte[] bytes, final byte[] signature) {
+    public boolean isSignatureValid(final byte[] bytes, final String signature) {
 
         final Operation resultOperation = Operation.resultOperation("isSignatureValid")
                                                     .with("transaction_id", UUID.randomUUID())
@@ -98,14 +100,15 @@ public class Signer {
         boolean valid = false;
         try {
             ellipticCurveDSA.update(bytes);
-            valid = ellipticCurveDSA.verify(signature);
+            final Optional<byte[]> base64DecodedBytes = Encoder.getBase64DecodedBytes(signature);
+            valid = ellipticCurveDSA.verify(base64DecodedBytes.get());
         } catch (SignatureException e) {
             resultOperation.wasFailure().throwingException(e).log();
         }
 
         String resultString = String.format("{\"data\": \"%s\", \"signature\": \"%s\", \"isValid\": \"%b\"}",
                                             new String(bytes),
-                                            new String(signature),
+                                            signature,
                                             valid);
         resultOperation.wasSuccessful().yielding("isSignatureValidResult", resultString).log();
         return valid;
@@ -118,8 +121,10 @@ public class Signer {
                                                     .with("transaction_id", UUID.randomUUID())
                                                     .started(this);
 
-        byte[] publicKeyBytes = Encoder.getBase64DecodedBytes(base64EncodedPublicKey);
-        byte[] privateKeyBytes = Encoder.getBase64DecodedBytes(base64EncodedPrivateKey);
+        byte[] publicKeyBytes = Encoder.getBase64DecodedBytes(base64EncodedPublicKey)
+                                        .orElseThrow(RuntimeException::new);
+        byte[] privateKeyBytes = Encoder.getBase64DecodedBytes(base64EncodedPrivateKey)
+                                        .orElseThrow(RuntimeException::new);
 
         final KeyFactory keyFactory;
         try {
