@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.stream.IntStream;
 
 public class EncoderTest {
 
@@ -40,4 +41,34 @@ public class EncoderTest {
 
         Assert.assertEquals(testString, new String(decodedBytes, StandardCharsets.UTF_8));
     }
+
+    @Test
+    public void testEncodingAndDecodingOfStringWithLatinChars() throws Exception {
+
+        String testString = "êfooñbar";
+        String encodedString = Encoder.getBase64EncodedString(testString.getBytes());
+        byte[] decodedBytes = Encoder.getBase64DecodedBytes(encodedString).get();
+
+        Assert.assertEquals(testString, new String(decodedBytes, StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testEncodingAndDecodingOfAREALLLLLLLYYYYYYLOOOOOONGString() throws Exception {
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        IntStream.iterate(0, i -> i + 2)
+                .limit(10000)
+                .forEach(number -> {
+                    char[] ch = Character.toChars(number);
+                    stringBuilder.append(new String(ch));
+                });
+
+        String testString = stringBuilder.toString();
+        String encodedString = Encoder.getBase64EncodedString(testString.getBytes());
+        byte[] decodedBytes = Encoder.getBase64DecodedBytes(encodedString).get();
+
+        Assert.assertEquals(testString, new String(decodedBytes, StandardCharsets.UTF_8));
+    }
+
 }
