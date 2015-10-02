@@ -15,6 +15,12 @@ public class Encoder {
 
     public static byte[] getBase64DecodedBytes(final String encodedString) {
 
-        return BASE_64_DECODER.decode(encodedString.getBytes(StandardCharsets.UTF_8));
+        try {
+            return BASE_64_DECODER.decode(encodedString.getBytes(StandardCharsets.UTF_8));
+        } catch(IllegalArgumentException e) {
+            // We do not want a RuntimeException to be thrown when the string passed is not in valid Base64 scheme
+            // as bad input is possible to the lib methods.
+            return null;
+        }
     }
 }
