@@ -17,9 +17,9 @@ create such a key-pair.
 
 Example:
 
-        KeyPairGenerator keyPairGenerator = new KeyPairGenerator();
-        String privateKey = keyPairGenerator.getBase64EncodedPrivateKey();
-        String publicKey = keyPairGenerator.getBase64EncodedPublicKey();
+    KeyPairGenerator keyPairGenerator = new KeyPairGenerator();
+    String privateKey = keyPairGenerator.getBase64EncodedPrivateKey();
+    String publicKey = keyPairGenerator.getBase64EncodedPublicKey();
 
 ### Creating and verifying cryptographic signatures
 * Initialise a new Signer using the base64 encoded public and private keys generated as shown above.
@@ -29,26 +29,28 @@ of [Signer](src/main/java/com/ft/membership/crypto/signature/Signer.java) class.
 
 Example:
 
-        Signer signer = new Signer(publicKey, privateKey);
-        String testString = "foo";
-        byte[] signedBytes = signer.signBytes(testString.getBytes());
+    Signer signer = new Signer(publicKey, privateKey);
+    String testString = "foo";
+    byte[] signedBytes = signer.signBytes(testString.getBytes());
         
 * Verify a signature using the `isSignatureValid` method of [Signer](src/main/java/com/ft/membership/crypto/signature/Signer.java) 
 class.
 
 Example:
 
-        signer.isSignatureValid(testString.getBytes(), signedBytes)
+    signer.isSignatureValid(testString.getBytes(), signedBytes)
         
 ## Developing crypto-signature
 
 Pull requests welcome!
 
 ### How to build and run tests locally?
-> mvn clean verify
+
+    mvn clean verify
 
 ### How to release a new version?
-For FT developers, each new commit to `master` is automatically built and pushed to FT's internal Nexus repo.    
+For FT developers, each new commit to `master` is automatically built and pushed to 
+[FT Nexus](http://anthill.svc.ft.com:8081/nexus/index.html#nexus-search;quick~crypto-signatures) repo.
 The Jenkins CI job can be found here: [http://ftjen03760-lviw-uk-p:8181/job/crypto-signatures/](http://ftjen03760-lviw-uk-p:8181/job/crypto-signatures/)
 
 Non-FT developers wishing to use the repo, will have to build and deploy to their local maven repo before manually until
