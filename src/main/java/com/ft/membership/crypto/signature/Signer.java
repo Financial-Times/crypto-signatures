@@ -103,7 +103,7 @@ public class Signer {
      * @return boolean representing the validity of the signature
      * @throws RuntimeException
      */
-    private boolean isSignatureValid(final byte[] bytes, final byte[] signature, String transactionId) {
+    public boolean isSignatureValid(final byte[] bytes, final byte[] signature, String transactionId) {
         final Operation resultOperation = Operation.resultOperation("isSignatureValid")
                 .with("transaction_id", transactionId)
                 .started(this);
