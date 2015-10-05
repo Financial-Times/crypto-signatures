@@ -24,7 +24,7 @@ Example:
 ### Creating and verifying cryptographic signatures using byte arrays
 * Initialise a new Signer using the base64 encoded public and private keys generated as shown above.
 
-* Create a cryptographic signature of your object, pass your byte array to the `signBytes` method
+* Convert whatever you want to sign to a byte array and pass your byte array to the `signBytes` method
 of [Signer](src/main/java/com/ft/membership/crypto/signature/Signer.java) class.
 
 Example:
@@ -43,7 +43,7 @@ Example:
 ### Creating and verifying cryptographic signatures using strings
 * Initialise a new StringSigner using the base64 encoded public and private keys generated as shown above.
 
-* Pass your string to the `signString` method of
+* Convert whatever you want to sign to a string and pass your string to the `signString` method of
 [StringSigner](src/main/java/com/ft/membership/crypto/signature/StringSigner.java) class.
 
 Example:
