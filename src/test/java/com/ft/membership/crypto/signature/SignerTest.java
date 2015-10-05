@@ -23,7 +23,7 @@ public class SignerTest {
 
         Signer signer = new Signer(publicKey, privateKey);
         String testString = "foo";
-        String signature = signer.signBytes(testString.getBytes());
+        byte[] signature = signer.signBytes(testString.getBytes());
 
         Assert.assertTrue(signer.isSignatureValid(testString.getBytes(), signature));
     }
@@ -33,11 +33,9 @@ public class SignerTest {
 
         Signer signer = new Signer(publicKey, privateKey);
         String testString = "foo";
-        String signature = signer.signBytes(testString.getBytes());
+        byte[] signature = signer.signBytes(testString.getBytes());
         // tamper signature
-        char ch = signature.charAt(0);
-        ch ++;
-        signature = ch + signature.substring(1);
+        signature[0] = (byte)(signature[0] ^ 0x01);
 
         Assert.assertFalse(signer.isSignatureValid(testString.getBytes(), signature));
     }
