@@ -21,25 +21,44 @@ Example:
     String privateKey = keyPairGenerator.getBase64EncodedPrivateKey();
     String publicKey = keyPairGenerator.getBase64EncodedPublicKey();
 
-### Creating and verifying cryptographic signatures
+### Creating and verifying cryptographic signatures using byte arrays
 * Initialise a new Signer using the base64 encoded public and private keys generated as shown above.
 
-* Create a cryptographic signature of your object, pass a serialised version of your object to the `signBytes` method
+* Convert whatever you want to sign to a byte array and pass your byte array to the `signBytes` method
 of [Signer](src/main/java/com/ft/membership/crypto/signature/Signer.java) class.
 
 Example:
 
     Signer signer = new Signer(publicKey, privateKey);
-    String testString = "foo";
-    byte[] signedBytes = signer.signBytes(testString.getBytes());
+    byte[] testBytes = new byte[]{(byte)0x01, (byte)0x02,...};
+    byte[] signedBytes = signer.signBytes(testBytes);
         
-* Verify a signature using the `isSignatureValid` method of [Signer](src/main/java/com/ft/membership/crypto/signature/Signer.java) 
-class.
+* Verify a signature using the `isSignatureValid` method of
+[Signer](src/main/java/com/ft/membership/crypto/signature/Signer.java) class.
 
 Example:
 
-    signer.isSignatureValid(testString.getBytes(), signedBytes)
+    signer.isSignatureValid(testBytes, signedBytes)
         
+### Creating and verifying cryptographic signatures using strings
+* Initialise a new StringSigner using the base64 encoded public and private keys generated as shown above.
+
+* Convert whatever you want to sign to a string and pass your string to the `signString` method of
+[StringSigner](src/main/java/com/ft/membership/crypto/signature/StringSigner.java) class.
+
+Example:
+
+    StringSigner signer = new StringSigner(publicKey, privateKey);
+    String testString = "String to sign";
+    String signatureString = signer.signString(testString);
+
+* Verify a signature using the `isSignatureValid` method of
+[StringSigner](src/main/java/com/ft/membership/crypto/signature/StringSigner.java) class.
+
+Example:
+
+    signer.isSignatureValid(testString, signatureString)
+
 ## Developing crypto-signature
 
 Pull requests welcome!

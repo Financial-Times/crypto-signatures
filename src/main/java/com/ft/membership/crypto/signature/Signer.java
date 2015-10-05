@@ -14,7 +14,6 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -36,16 +35,29 @@ public class Signer {
     }
 
     /**
-     * Sign the bytes provided as argument and return the signature as string
+     * Sign the bytes provided as argument and return the signature as bytes
      *
      * @param bytes - byte array to sign
-     * @return signature as a based64 encoded String
+     * @return signature as byte array
      * @throws IllegalArgumentException, RuntimeException
      */
-    public String signBytes(final byte[] bytes) {
+    public byte[] signBytes(final byte[] bytes) {
+        return signBytes(bytes, UUID.randomUUID().toString());
+    }
+
+    /**
+     * Sign the bytes provided as argument and return the signature as bytes
+     *
+     * @param bytes - byte array to sign
+     * @param transactionId - transaction id used for logging
+     * @return signature as byte array
+     * @throws IllegalArgumentException, RuntimeException
+     */
+    public byte[] signBytes(final byte[] bytes, final String transactionId) {
 
         final Operation resultOperation = Operation.resultOperation("signBytes")
-                                                    .with("transaction_id", UUID.randomUUID())
+                                                    .with("transaction_id", transactionId)
+                                                    .with("bytes", Encoder.getBase64EncodedString(bytes) )
                                                     .started(this);
 
         Signature ellipticCurveDSA;
@@ -61,14 +73,8 @@ public class Signer {
         try {
             ellipticCurveDSA.update(bytes);
             final byte[] signedBytes = ellipticCurveDSA.sign();
-            final String signedDataAsString = Encoder.getBase64EncodedString(signedBytes);
-
-            final String resultString = String.format("{\"data\": \"%s\", \"signature\": \"%s\"}",
-                                        new String(bytes),
-                                        signedDataAsString);
-            resultOperation.wasSuccessful().yielding("signBytesResult", resultString).log();
-
-            return signedDataAsString;
+            resultOperation.wasSuccessful().log();
+            return signedBytes;
         } catch (SignatureException e) {
             resultOperation.wasFailure().throwingException(e).log();
             throw new RuntimeException(e);
@@ -79,15 +85,28 @@ public class Signer {
      * Verifies the signature for a given byte array
      *
      * @param bytes - byte array of the data whose signature is to be verified
-     * @param signature - base64 encoded signature of the bytes
+     * @param signature - byte array containing the signature
      * @return boolean representing the validity of the signature
      * @throws RuntimeException
      */
-    public boolean isSignatureValid(final byte[] bytes, final String signature) {
+    public boolean isSignatureValid(final byte[] bytes, final byte[] signature) {
+        return isSignatureValid(bytes, signature, UUID.randomUUID().toString());
+    }
 
+
+    /**
+     * Verifies the signature for a given byte array
+     *
+     * @param bytes - byte array of the data whose signature is to be verified
+     * @param signature - byte array containing signature
+     * @param transactionId - transaction id used for logging
+     * @return boolean representing the validity of the signature
+     * @throws RuntimeException
+     */
+    public boolean isSignatureValid(final byte[] bytes, final byte[] signature, String transactionId) {
         final Operation resultOperation = Operation.resultOperation("isSignatureValid")
-                                                    .with("transaction_id", UUID.randomUUID())
-                                                    .started(this);
+                .with("transaction_id", transactionId)
+                .started(this);
 
         Signature ellipticCurveDSA;
 
@@ -102,17 +121,16 @@ public class Signer {
         boolean valid = false;
         try {
             ellipticCurveDSA.update(bytes);
-            final Optional<byte[]> base64DecodedBytes = Encoder.getBase64DecodedBytes(signature);
-            valid = ellipticCurveDSA.verify(base64DecodedBytes.get());
+            valid = ellipticCurveDSA.verify(signature);
         } catch (SignatureException e) {
-            resultOperation.wasFailure().throwingException(e).log();
+            resultOperation
+                .wasFailure()
+                .withDetail("signature_bytes", Encoder.getBase64EncodedString(bytes))
+                .throwingException(e)
+                .log();
         }
 
-        String resultString = String.format("{\"data\": \"%s\", \"signature\": \"%s\", \"isValid\": \"%b\"}",
-                                            new String(bytes),
-                                            signature,
-                                            valid);
-        resultOperation.wasSuccessful().yielding("isSignatureValidResult", resultString).log();
+        resultOperation.wasSuccessful().log();
         return valid;
     }
 
