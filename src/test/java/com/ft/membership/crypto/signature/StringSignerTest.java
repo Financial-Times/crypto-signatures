@@ -41,7 +41,8 @@ public class StringSignerTest {
     }
 
     @Test
-    public void shouldUTF8EncodeStringAndFailToVerifyAgainstInvalidBase64DecodedSignature() throws UnsupportedEncodingException {
+    public void shouldUTF8EncodeStringAndFailToVerifyAgainstInvalidBase64DecodedSignature()
+            throws UnsupportedEncodingException {
         final String invalidSignature = "Invalid signature as a string";
         final String stringToSign = "ユニコード文字列は署名します"; //using unicode to check UTF-8 encoding
 
