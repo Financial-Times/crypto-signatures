@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * This class provide methods to create and verify cryptographic signatures for strings.
  *
- * @since 0.1
+ * @since 0.23.0
  */
 public class StringSigner {
     private final Signer signer;
