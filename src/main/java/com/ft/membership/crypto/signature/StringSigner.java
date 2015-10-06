@@ -4,6 +4,7 @@ import com.ft.membership.logging.Operation;
 import com.google.common.base.Throwables;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -51,7 +52,7 @@ public class StringSigner {
         try {
             final byte[] stringAsBytes = string.getBytes("UTF-8");
             final byte[] signatureAsBytes = signer.signBytes(stringAsBytes);
-            final String signatureString = new String(signatureAsBytes, "UTF-8");
+            final String signatureString = Encoder.getBase64EncodedString(signatureAsBytes);
             operation.wasSuccessful().log();
             return signatureString;
         } catch (Exception e) {
@@ -89,17 +90,25 @@ public class StringSigner {
 
         try {
             final byte[] stringAsBytes = string.getBytes("UTF-8");
-            final byte[] signatureAsBytes = signatureString.getBytes("UTF-8");
+            final Optional<byte[]> signatureAsBytesOption = Encoder.getBase64DecodedBytes(signatureString);
 
-            final boolean isValid = signer.isSignatureValid(stringAsBytes, signatureAsBytes);
+            return signatureAsBytesOption.map((signatureAsBytes) -> {
+                final boolean isValid = signer.isSignatureValid(stringAsBytes, signatureAsBytes);
 
-            if(isValid) {
-                operation.wasSuccessful().log();
-            } else {
-                operation.wasFailure().withDetail("signature_sting", signatureString).log();
-            }
+                if (isValid) {
+                    operation.wasSuccessful().log();
+                } else {
+                    operation.wasFailure().withMessage("signature was invalid")
+                            .withDetail("signature_sting", signatureString).log();
+                }
 
-            return isValid;
+                return isValid;
+            })
+            .orElseGet(() -> {
+                operation.wasFailure().withMessage("signature was not correctly base64 encoded")
+                        .withDetail("signature_sting", signatureString).log();
+                return false;
+            });
         } catch (UnsupportedEncodingException e) {
             operation.wasFailure().throwingException(e).log();
             throw Throwables.propagate(e);
