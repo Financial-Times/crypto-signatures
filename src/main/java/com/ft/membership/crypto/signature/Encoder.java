@@ -17,7 +17,7 @@ public class Encoder {
      */
     public static String getBase64EncodedString(final byte[] bytes) {
 
-        return new String(BASE_64_ENCODER.encode(bytes), StandardCharsets.UTF_8);
+        return BASE_64_ENCODER.encodeToString(bytes);
     }
 
     /**
@@ -29,7 +29,7 @@ public class Encoder {
     public static Optional<byte[]> getBase64DecodedBytes(final String encodedString) {
 
         try {
-            return Optional.of(BASE_64_DECODER.decode(encodedString.getBytes(StandardCharsets.UTF_8)));
+            return Optional.of(BASE_64_DECODER.decode(encodedString));
         } catch(IllegalArgumentException e) {
             // We do not want a RuntimeException to be thrown when the string passed is not in valid Base64 scheme
             // as bad input is possible to the lib methods.

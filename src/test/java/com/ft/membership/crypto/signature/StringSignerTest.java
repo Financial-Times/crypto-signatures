@@ -20,21 +20,21 @@ public class StringSignerTest {
 
     @Test
     public void shouldUTF8EncodeStringAndReturnSignatureAsUrlSafeBase64() throws UnsupportedEncodingException {
-        final String signature = "Signature as a string";
+        final String signature = "111222333444";
         final String stringToSign = "ユニコード文字列は署名します"; //using unicode to check UTF-8 encoding
 
         when(mockSigner.signBytes(stringToSign.getBytes("UTF-8")))
-                .thenReturn(signature.getBytes("UTF-8"));
+                .thenReturn(Encoder.getBase64DecodedBytes(signature).get());
 
         assertThat(stringSigner.signString(stringToSign), equalTo(signature));
     }
 
     @Test
     public void shouldUTF8EncodeStringAndVerifyAgainstBase64DecodedSignature() throws UnsupportedEncodingException {
-        final String signature = "Signature as a string";
+        final String signature = "111222333444";
         final String stringToSign = "ユニコード文字列は署名します"; //using unicode to check UTF-8 encoding
 
-        when(mockSigner.isSignatureValid(stringToSign.getBytes("UTF-8"), signature.getBytes("UTF-8")))
+        when(mockSigner.isSignatureValid(stringToSign.getBytes("UTF-8"), Encoder.getBase64DecodedBytes(signature).get()))
                 .thenReturn(true);
 
         assertThat(stringSigner.isSignatureValid(stringToSign, signature), equalTo(true));
@@ -43,10 +43,10 @@ public class StringSignerTest {
     @Test
     public void shouldUTF8EncodeStringAndFailToVerifyAgainstInvalidBase64DecodedSignature()
             throws UnsupportedEncodingException {
-        final String invalidSignature = "Invalid signature as a string";
+        final String invalidSignature = "111222333444";
         final String stringToSign = "ユニコード文字列は署名します"; //using unicode to check UTF-8 encoding
 
-        when(mockSigner.isSignatureValid(stringToSign.getBytes("UTF-8"), invalidSignature.getBytes("UTF-8")))
+        when(mockSigner.isSignatureValid(stringToSign.getBytes("UTF-8"), Encoder.getBase64DecodedBytes(invalidSignature).get()))
                 .thenReturn(false);
 
         assertThat(stringSigner.isSignatureValid(stringToSign, invalidSignature), equalTo(false));
