@@ -118,20 +118,21 @@ public class Signer {
             throw new RuntimeException(e);
         }
 
-        boolean valid = false;
+        boolean isValid;
         try {
             ellipticCurveDSA.update(bytes);
-            valid = ellipticCurveDSA.verify(signature);
+            isValid = ellipticCurveDSA.verify(signature);
         } catch (SignatureException e) {
             resultOperation
                 .wasFailure()
                 .withDetail("signature_bytes", Encoder.getBase64EncodedString(bytes))
                 .throwingException(e)
                 .log();
+            return false;
         }
 
         resultOperation.wasSuccessful().log();
-        return valid;
+        return isValid;
     }
 
     private KeyPair createKeyPair(final String base64EncodedPublicKey,
