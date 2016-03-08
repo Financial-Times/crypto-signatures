@@ -1,7 +1,7 @@
 package com.ft.membership.crypto.signature;
 
-import static com.ft.membership.crypto.signature.SignerOnly.ALGORITHM;
-import static com.ft.membership.crypto.signature.SignerOnly.SECURITY_PROVIDER_SUN_EC;
+import static com.ft.membership.crypto.signature.Signer.ALGORITHM;
+import static com.ft.membership.crypto.signature.Signer.SECURITY_PROVIDER_SUN_EC;
 
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;

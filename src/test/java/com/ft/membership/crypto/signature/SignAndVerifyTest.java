@@ -22,7 +22,7 @@ public class SignAndVerifyTest {
 
     @Test
     public void testValidSignatureIsVerifiedSuccessfully() throws Exception {
-        SignerOnly signer = new SignerOnly(privateKey);
+        Signer signer = new Signer(privateKey);
         String testString = "foo";
         byte[] signature = signer.signBytes(testString.getBytes());
 
@@ -32,7 +32,7 @@ public class SignAndVerifyTest {
 
     @Test
     public void testTamperedSignatureIsNotVerifiedSuccessfully() throws Exception {
-        SignerOnly signer = new SignerOnly(privateKey);
+        Signer signer = new Signer(privateKey);
         String testString = "foo";
         byte[] signature = signer.signBytes(testString.getBytes());
         // tamper signature

@@ -9,13 +9,13 @@ import java.io.UnsupportedEncodingException;
 
 import org.junit.Test;
 
-public class StringSignerOnlyTest {
-    private StringSignerOnly stringSigner;
-    private SignerOnly mockSigner;
+public class StringSignerTest {
+    private StringSigner stringSigner;
+    private Signer mockSigner;
 
-    public StringSignerOnlyTest() {
-        mockSigner = mock(SignerOnly.class);
-        stringSigner = new StringSignerOnly(mockSigner);
+    public StringSignerTest() {
+        mockSigner = mock(Signer.class);
+        stringSigner = new StringSigner(mockSigner);
     }
 
     @Test
