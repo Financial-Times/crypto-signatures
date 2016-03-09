@@ -20,6 +20,10 @@ public class StringVerifier {
         verifier = new Verifier(publicKey);
     }
 
+    public StringVerifier(final String base64EncodedPublicKey) {
+        verifier = new Verifier(base64EncodedPublicKey);
+    }
+
     public StringVerifier(final Verifier verifier) {
         this.verifier = verifier;
     }

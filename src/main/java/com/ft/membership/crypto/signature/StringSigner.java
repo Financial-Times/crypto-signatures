@@ -18,6 +18,9 @@ public class StringSigner {
         signer = new Signer(privateKey);
     }
 
+    public StringSigner(final String base64EncodedPrivateKey) {
+        signer = new Signer(base64EncodedPrivateKey);
+    }
 
     public StringSigner(final Signer signer) {
         this.signer = signer;
