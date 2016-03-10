@@ -71,11 +71,11 @@ public class StringVerifier {
 
                 return isValid;
             })
-                    .orElseGet(() -> {
-                        operation.wasFailure().withMessage("signature was not correctly base64 encoded")
-                                .withDetail("signature_string", signatureString).log();
-                        return false;
-                    });
+            .orElseGet(() -> {
+                operation.wasFailure().withMessage("signature was not correctly base64 encoded")
+                        .withDetail("signature_string", signatureString).log();
+                return false;
+            });
         } catch (UnsupportedEncodingException e) {
             operation.wasFailure().throwingException(e).log();
             throw Throwables.propagate(e);
