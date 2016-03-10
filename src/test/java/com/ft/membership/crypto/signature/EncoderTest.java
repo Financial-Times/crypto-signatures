@@ -1,11 +1,11 @@
 package com.ft.membership.crypto.signature;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.stream.IntStream;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class EncoderTest {
 
@@ -15,7 +15,7 @@ public class EncoderTest {
         String testString = "foo";
         byte[] encodedBytes = Base64.getUrlEncoder().withoutPadding().encode(testString.getBytes());
         String expectedEncodedString = new String(encodedBytes, StandardCharsets.UTF_8);
-        String actualEncodedString  = Encoder.getBase64EncodedString(testString.getBytes());
+        String actualEncodedString = Encoder.getBase64EncodedString(testString.getBytes());
 
         Assert.assertEquals(expectedEncodedString, actualEncodedString);
     }

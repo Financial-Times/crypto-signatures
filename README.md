@@ -22,42 +22,46 @@ Example:
     String publicKey = keyPairGenerator.getBase64EncodedPublicKey();
 
 ### Creating and verifying cryptographic signatures using byte arrays
-* Initialise a new Signer using the base64 encoded public and private keys generated as shown above.
+* Initialise a new Signer using the base64 encoded private key generated as shown above.
+* Initialise a new Verifier using the base64 encoded public key generated as shown above.
 
 * Convert whatever you want to sign to a byte array and pass your byte array to the `signBytes` method
 of [Signer](src/main/java/com/ft/membership/crypto/signature/Signer.java) class.
 
 Example:
 
-    Signer signer = new Signer(publicKey, privateKey);
+    Signer signer = new Signer(privateKey);
     byte[] testBytes = new byte[]{(byte)0x01, (byte)0x02,...};
-    byte[] signedBytes = signer.signBytes(testBytes);
+    byte[] signature = signer.signBytes(testBytes);
         
 * Verify a signature using the `isSignatureValid` method of
-[Signer](src/main/java/com/ft/membership/crypto/signature/Signer.java) class.
+[Verifier](src/main/java/com/ft/membership/crypto/signature/Verifier.java) class.
 
 Example:
 
-    signer.isSignatureValid(testBytes, signedBytes)
+    Verifier verifier = new Verifier(publicKey);
+    verifier.isSignatureValid(testBytes, signature)
         
 ### Creating and verifying cryptographic signatures using strings
-* Initialise a new StringSigner using the base64 encoded public and private keys generated as shown above.
+* Initialise a new StringSigner using the base64 encoded private key generated as shown above.
+* Initialise a new StringVerifier using the base64 encoded public key generated as shown above.
 
 * Convert whatever you want to sign to a string and pass your string to the `signString` method of
 [StringSigner](src/main/java/com/ft/membership/crypto/signature/StringSigner.java) class.
 
 Example:
 
-    StringSigner signer = new StringSigner(publicKey, privateKey);
+    StringSigner signer = new StringSigner(privateKey);
     String testString = "String to sign";
     String signatureString = signer.signString(testString);
 
 * Verify a signature using the `isSignatureValid` method of
-[StringSigner](src/main/java/com/ft/membership/crypto/signature/StringSigner.java) class.
+[StringVerifier](src/main/java/com/ft/membership/crypto/signature/StringVerifier.java) class.
 
 Example:
 
-    signer.isSignatureValid(testString, signatureString)
+    StringVerifier verifier = new StringVerifier(publicKey);
+    verifier.isSignatureValid(testString, signatureString)
 
 ## Developing crypto-signature
 

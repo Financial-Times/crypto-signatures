@@ -1,24 +1,26 @@
 package com.ft.membership.crypto.signature;
 
+import java.security.PrivateKey;
+import java.util.UUID;
+
 import com.ft.membership.logging.Operation;
 import com.google.common.base.Throwables;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Optional;
-import java.util.UUID;
-
 /**
- * This class provide methods to create and verify cryptographic signatures for strings.
+ * This class provide methods to create cryptographic signatures for strings.
  *
- * @since 0.23.0
+ * @since 0.26.0
  */
 public class StringSigner {
     private final Signer signer;
 
-    public StringSigner(final String base64EncodedPublicKey, final String base64EncodedPrivateKey) {
-        signer = new Signer(base64EncodedPublicKey, base64EncodedPrivateKey);
+    public StringSigner(final PrivateKey privateKey) {
+        signer = new Signer(privateKey);
     }
 
+    public StringSigner(final String base64EncodedPrivateKey) {
+        signer = new Signer(base64EncodedPrivateKey);
+    }
 
     public StringSigner(final Signer signer) {
         this.signer = signer;
@@ -38,7 +40,7 @@ public class StringSigner {
     /**
      * Sign the UTF-8 encoding of the string provided as argument, and return the signature as a base64 encoded string.
      *
-     * @param string - string to encode and sign
+     * @param string        - string to encode and sign
      * @param transactionId - transaction id used for logging
      * @return signature as a encoded as url safe base64 encoded string
      * @throws IllegalArgumentException, RuntimeException, UnsupportedEncodingException
@@ -61,57 +63,5 @@ public class StringSigner {
         }
     }
 
-    /**
-     * Verifies the provided url safe base64 encoded signature for the UTF-8 encoding of the provided string
-     *
-     * @param string            - string whos UTF-8 encoding will be verified
-     * @param signatureString   - string containing url safe base64 encoded signature
-     * @return boolean representing the validity of the signature
-     * @throws RuntimeException
-     */
-    public boolean isSignatureValid(final String string, final String signatureString) {
-        return isSignatureValid(string, signatureString, UUID.randomUUID().toString());
-    }
 
-    /**
-     * Verifies the provided url safe base64 encoded signature for the UTF-8 encoding of the provided string
-     *
-     * @param string            - string whos UTF-8 encoding will be verified
-     * @param signatureString   - string containing url safe base64 encoded signature
-     * @param transactionId - transaction id used for logging
-     * @return boolean representing the validity of the signature
-     * @throws RuntimeException
-     */
-    public boolean isSignatureValid(final String string, final String signatureString, final String transactionId) {
-        final Operation operation = Operation.resultOperation("isSignatureValid")
-                .with("string", string)
-                .with("transaction_id", transactionId)
-                .started(this);
-
-        try {
-            final byte[] stringAsBytes = string.getBytes("UTF-8");
-            final Optional<byte[]> signatureAsBytesOption = Encoder.getBase64DecodedBytes(signatureString);
-
-            return signatureAsBytesOption.map((signatureAsBytes) -> {
-                final boolean isValid = signer.isSignatureValid(stringAsBytes, signatureAsBytes);
-
-                if (isValid) {
-                    operation.wasSuccessful().log();
-                } else {
-                    operation.wasFailure().withMessage("signature was invalid")
-                            .withDetail("signature_sting", signatureString).log();
-                }
-
-                return isValid;
-            })
-            .orElseGet(() -> {
-                operation.wasFailure().withMessage("signature was not correctly base64 encoded")
-                        .withDetail("signature_sting", signatureString).log();
-                return false;
-            });
-        } catch (UnsupportedEncodingException e) {
-            operation.wasFailure().throwingException(e).log();
-            throw Throwables.propagate(e);
-        }
-    }
 }
