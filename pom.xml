@@ -20,6 +20,7 @@
         <logback.classic.version>1.0.13</logback.classic.version>
         <slf4j.version>1.7.12</slf4j.version>
         <mockito.version>1.10.19</mockito.version>
+        <guava.version>19.0</guava.version>
     </properties>
 
     <dependencies>
@@ -54,7 +55,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 
