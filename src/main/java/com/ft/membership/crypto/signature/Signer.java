@@ -16,12 +16,9 @@ import com.ft.membership.logging.Operation;
 /**
  * This class provide methods to create and verify cryptographic signatures.
  *
- * @since 0.1
+ * @since 0.26.0
  */
 public class Signer {
-
-    public static final String SECURITY_PROVIDER_SUN_EC = "SunEC";
-    public static final String ALGORITHM = "SHA256withECDSA";
 
     private final PrivateKey privateKey;
 
@@ -62,7 +59,7 @@ public class Signer {
         Signature ellipticCurveDSA;
 
         try {
-            ellipticCurveDSA = Signature.getInstance(ALGORITHM, SECURITY_PROVIDER_SUN_EC);
+            ellipticCurveDSA = Signature.getInstance(Config.getSignatureAlgorithm(), Config.getSecurityProvider());
             ellipticCurveDSA.initSign(privateKey);
         } catch (NoSuchProviderException | NoSuchAlgorithmException | InvalidKeyException e) {
             resultOperation.wasFailure().throwingException(e).log();
@@ -87,7 +84,7 @@ public class Signer {
 
         final KeyFactory keyFactory;
         try {
-            keyFactory = KeyFactory.getInstance("EC", SECURITY_PROVIDER_SUN_EC);
+            keyFactory = KeyFactory.getInstance(Config.getKeyAlgorithm(), Config.getSecurityProvider());
             PrivateKey privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(privateKeyBytes));
             return privateKey;
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {

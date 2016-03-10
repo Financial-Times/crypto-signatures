@@ -1,8 +1,5 @@
 package com.ft.membership.crypto.signature;
 
-import static com.ft.membership.crypto.signature.Signer.ALGORITHM;
-import static com.ft.membership.crypto.signature.Signer.SECURITY_PROVIDER_SUN_EC;
-
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -19,7 +16,7 @@ import com.ft.membership.logging.Operation;
 /**
  * This class provide methods to create and verify cryptographic signatures.
  *
- * @since 0.1
+ * @since 0.26.0
  */
 public class Verifier {
 
@@ -63,7 +60,7 @@ public class Verifier {
         Signature ellipticCurveDSA;
 
         try {
-            ellipticCurveDSA = Signature.getInstance(ALGORITHM, SECURITY_PROVIDER_SUN_EC);
+            ellipticCurveDSA = Signature.getInstance(Config.getSignatureAlgorithm(), Config.getSecurityProvider());
             ellipticCurveDSA.initVerify(publicKey);
         } catch (NoSuchProviderException | NoSuchAlgorithmException | InvalidKeyException e) {
             resultOperation.wasFailure().throwingException(e).log();
@@ -94,7 +91,7 @@ public class Verifier {
 
         final KeyFactory keyFactory;
         try {
-            keyFactory = KeyFactory.getInstance("EC", SECURITY_PROVIDER_SUN_EC);
+            keyFactory = KeyFactory.getInstance(Config.getKeyAlgorithm(), Config.getSecurityProvider());
             PublicKey publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(publicKeyBytes));
             return publicKey;
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
