@@ -60,9 +60,9 @@ public class Verifier {
         Signature ellipticCurveDSA;
 
         try {
-            ellipticCurveDSA = Signature.getInstance(Config.getSignatureAlgorithm(), Config.getSecurityProvider());
+            ellipticCurveDSA = Signature.getInstance(Config.getSignatureAlgorithm());
             ellipticCurveDSA.initVerify(publicKey);
-        } catch (NoSuchProviderException | NoSuchAlgorithmException | InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             resultOperation.wasFailure().throwingException(e).log();
             throw new RuntimeException(e);
         }
@@ -91,10 +91,10 @@ public class Verifier {
 
         final KeyFactory keyFactory;
         try {
-            keyFactory = KeyFactory.getInstance(Config.getKeyAlgorithm(), Config.getSecurityProvider());
+            keyFactory = KeyFactory.getInstance(Config.getKeyAlgorithm());
             PublicKey publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(publicKeyBytes));
             return publicKey;
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
         }
     }

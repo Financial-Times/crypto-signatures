@@ -63,6 +63,16 @@ Example:
     StringVerifier verifier = new StringVerifier(publicKey);
     verifier.isSignatureValid(testString, signatureString)
 
+## Using the library in environments that doesn't provide SHA256withECDSA implementation (AWS Lambda)
+Add Bouncy Castle to the classpath:
+
+     org.bouncycastle:bcprov-jdk15on:1.54
+
+Dynamically register the provider:
+
+     java.security.Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
+
 ## Developing crypto-signature
 
 Pull requests welcome!
