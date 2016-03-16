@@ -59,9 +59,9 @@ public class Signer {
         Signature ellipticCurveDSA;
 
         try {
-            ellipticCurveDSA = Signature.getInstance(Config.getSignatureAlgorithm(), Config.getSecurityProvider());
+            ellipticCurveDSA = Signature.getInstance(Config.getSignatureAlgorithm());
             ellipticCurveDSA.initSign(privateKey);
-        } catch (NoSuchProviderException | NoSuchAlgorithmException | InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             resultOperation.wasFailure().throwingException(e).log();
             throw new RuntimeException(e);
         }
@@ -84,10 +84,10 @@ public class Signer {
 
         final KeyFactory keyFactory;
         try {
-            keyFactory = KeyFactory.getInstance(Config.getKeyAlgorithm(), Config.getSecurityProvider());
+            keyFactory = KeyFactory.getInstance(Config.getKeyAlgorithm());
             PrivateKey privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(privateKeyBytes));
             return privateKey;
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
         }
     }
