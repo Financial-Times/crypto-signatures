@@ -3,7 +3,6 @@ package com.ft.membership.crypto.signature;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
@@ -75,7 +74,7 @@ public class Verifier {
             resultOperation
                     .wasFailure()
                     .withDetail("signature_bytes", Encoder.getBase64EncodedString(bytes))
-                    .throwingException(e)
+                    .withMessage(e.getMessage())
                     .log();
             return false;
         }
