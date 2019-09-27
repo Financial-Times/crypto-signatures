@@ -1,5 +1,6 @@
 package com.ft.membership.crypto.signature;
 
+import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.util.UUID;
 
@@ -46,13 +47,13 @@ public class StringSigner {
      * @throws IllegalArgumentException, RuntimeException, UnsupportedEncodingException
      */
     public String signString(final String string, final String transactionId) {
-        final Operation operation = Operation.resultOperation("signString")
+        final Operation operation = Operation.operation("signString")
                 .with("string_to_sign", string)
                 .with("transaction_id", transactionId)
                 .started(this);
 
         try {
-            final byte[] stringAsBytes = string.getBytes("UTF-8");
+            final byte[] stringAsBytes = string.getBytes(StandardCharsets.UTF_8);
             final byte[] signatureAsBytes = signer.signBytes(stringAsBytes);
             final String signatureString = Encoder.getBase64EncodedString(signatureAsBytes);
             operation.wasSuccessful().log();

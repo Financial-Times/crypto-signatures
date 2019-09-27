@@ -52,7 +52,7 @@ public class Verifier {
      * @throws RuntimeException
      */
     public boolean isSignatureValid(final byte[] bytes, final byte[] signature, String transactionId) {
-        final Operation resultOperation = Operation.resultOperation("isSignatureValid")
+        final Operation resultOperation = Operation.operation("isSignatureValid")
                 .with("transaction_id", transactionId)
                 .started(this);
 

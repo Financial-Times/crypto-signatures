@@ -1,12 +1,10 @@
 package com.ft.membership.crypto.signature;
 
-import java.io.UnsupportedEncodingException;
+import com.ft.membership.logging.Operation;
+import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.util.Optional;
 import java.util.UUID;
-
-import com.ft.membership.logging.Operation;
-import com.google.common.base.Throwables;
 
 /**
  * This class provide methods to verify cryptographic signatures for strings.
@@ -50,35 +48,30 @@ public class StringVerifier {
      * @throws RuntimeException
      */
     public boolean isSignatureValid(final String string, final String signatureString, final String transactionId) {
-        final Operation operation = Operation.resultOperation("isSignatureValid")
+        final Operation operation = Operation.operation("isSignatureValid")
                 .with("string", string)
                 .with("transaction_id", transactionId)
                 .started(this);
 
-        try {
-            final byte[] stringAsBytes = string.getBytes("UTF-8");
-            final Optional<byte[]> signatureAsBytesOption = Encoder.getBase64DecodedBytes(signatureString);
+        final byte[] stringAsBytes = string.getBytes(StandardCharsets.UTF_8);
+        final Optional<byte[]> signatureAsBytesOption = Encoder.getBase64DecodedBytes(signatureString);
 
-            return signatureAsBytesOption.map((signatureAsBytes) -> {
-                final boolean isValid = verifier.isSignatureValid(stringAsBytes, signatureAsBytes);
+        return signatureAsBytesOption.map((signatureAsBytes) -> {
+            final boolean isValid = verifier.isSignatureValid(stringAsBytes, signatureAsBytes);
 
-                if (isValid) {
-                    operation.wasSuccessful().log();
-                } else {
-                    operation.wasFailure().withMessage("signature was invalid")
-                            .withDetail("signature_string", signatureString).log();
-                }
-
-                return isValid;
-            })
-            .orElseGet(() -> {
-                operation.wasFailure().withMessage("signature was not correctly base64 encoded")
+            if (isValid) {
+                operation.wasSuccessful().log();
+            } else {
+                operation.wasFailure().withMessage("signature was invalid")
                         .withDetail("signature_string", signatureString).log();
-                return false;
-            });
-        } catch (UnsupportedEncodingException e) {
-            operation.wasFailure().throwingException(e).log();
-            throw Throwables.propagate(e);
-        }
+            }
+
+            return isValid;
+        })
+        .orElseGet(() -> {
+            operation.wasFailure().withMessage("signature was not correctly base64 encoded")
+                    .withDetail("signature_string", signatureString).log();
+            return false;
+        });
     }
 }

@@ -1,17 +1,15 @@
 package com.ft.membership.crypto.signature;
 
+import com.ft.membership.logging.Operation;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.UUID;
-
-import com.ft.membership.logging.Operation;
 
 /**
  * This class provide methods to create and verify cryptographic signatures.
@@ -51,7 +49,7 @@ public class Signer {
      */
     public byte[] signBytes(final byte[] bytes, final String transactionId) {
 
-        final Operation resultOperation = Operation.resultOperation("signBytes")
+        final Operation resultOperation = Operation.operation("signBytes")
                 .with("transaction_id", transactionId)
                 .with("bytes", Encoder.getBase64EncodedString(bytes))
                 .started(this);
