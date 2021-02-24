@@ -1,6 +1,5 @@
 package com.ft.membership.crypto.signature;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 
